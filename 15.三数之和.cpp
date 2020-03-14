@@ -40,33 +40,38 @@ public:
         vector<vector<int>> result;
         sort(nums.begin(), nums.end());
         for(auto current=nums.begin(); current<nums.end(); current++) {
-            auto front = nums.begin();
+            if(*current>0) {
+                break;
+            }
+            if(current>nums.begin() && *current==*(current-1)) {
+                continue;
+            }
+            auto front = current + 1;
             auto rear = nums.end() - 1;
-            while(front<current && current<rear) {
-                if(*rear<0 || *front>0) {
+            while(front<rear) {
+                if(*rear<0) {
                     break;
                 }
 
                 int sum = *current + *front + *rear;
                 if(sum>0) {
-                    auto original_rear = rear;
-                    while(*rear==*original_rear && rear>current) {
-                        rear--;
-                    }
+                    rear--;
                 }
                 else if(sum<0) {
-                    auto original_front = front;
-                    while(*front==*original_front && front<current) {
-                        front++;
-                    }
+                    front++;
                 }
                 else {
-                    vector<int> tuple{*front, *current, *rear};
-                    // if(find(result.begin(), result.end(), tuple)==result.end()) {
-                        result.push_back(tuple);
-                    // }
-                    front++;
-                    rear--;
+                    vector<int> tuple{*current, *front, *rear};
+                    result.push_back(tuple);
+                    auto original_front = front;
+                    while(front<rear&&*original_front==*front) {
+                        front++;
+                    }
+
+                    auto original_rear = rear;
+                    while(front<rear&&*original_rear==*rear) {
+                        rear--;
+                    }
                 }
             }
         }
